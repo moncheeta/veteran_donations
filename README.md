@@ -1,5 +1,5 @@
 # Donate to Veterans
-Donate to Veterans using Venmo.
+Donate to Veterans using Venmo. This was built during my first hackathon at HSHacks in 2023.
 
 ## running
 To run the server, execute ```run.sh```.
