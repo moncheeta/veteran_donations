@@ -4,7 +4,7 @@ Donate to Veterans using Venmo. This was built during my first hackathon at HSHa
 
 ## setup
 
-To setup the server environment, run `python -m venv .` in the root of the project. Then, execute `. ./bin/activate` and you should be in the virtual environment. Lastly, run `pip install flask venmo_api` to install all the dependencies. Now, exit using by running `exit`.
+To setup the server environment, run ```python -m venv .``` in the root of the project. Then, execute ```. ./bin/activate``` and you should be in the virtual environment. Lastly, run ```pip install flask venmo_api``` to install all the dependencies. Now, ```exit```.
 
 ## running
 
