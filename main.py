@@ -1,4 +1,4 @@
-from getpass import getpass # for passwords
+from getpass import getpass  # for passwords
 
 # web interface
 from flask import Flask, render_template, flash, request
@@ -19,6 +19,7 @@ from email.mime.text import MIMEText
 # configuration
 import os.path
 
+
 class Venmo:
     client = None
 
@@ -26,12 +27,14 @@ class Venmo:
         access_token = None
         # read if a access_token already exists
         if os.path.isfile("config/access_token.txt"):
-            with open("config/access_token.txt", 'r') as file:
+            with open("config/access_token.txt", "r") as file:
                 access_token = file.read().rstrip()
         else:
             while access_token == None:
                 # create a new access token if one doesn't already exist
-                print("Provide a username and password for the account recieving the funds")
+                print(
+                    "Provide a username and password for the account recieving the funds"
+                )
                 username = input("Username: ")
                 if not username:
                     print("Error: username not provided")
@@ -42,7 +45,7 @@ class Venmo:
                     continue
                 access_token = Client.get_access_token(username, password)
                 # store access token
-                with open("config/access_token.txt", 'w') as file:
+                with open("config/access_token.txt", "w") as file:
                     file.write(access_token)
         self.client = Client(access_token)
 
@@ -54,6 +57,7 @@ class Venmo:
         self.client.payment.request_money(amount, "Veteran Donation", user.id)
         transactions = self.client.user.get_user_transactions(user.id)
         return None
+
 
 class Email:
     email = None
@@ -78,11 +82,15 @@ class Email:
             if not password:
                 return "Error: No password was provided for the email"
             self.password = password.rstrip()
-            smtp = input("What smtp server should emails go through? (ex. smtp.gmail.com for a gmail account): ")
+            smtp = input(
+                "What smtp server should emails go through? (ex. smtp.gmail.com for a gmail account): "
+            )
             if not smtp:
                 return "Error: No smtp server was provided"
             self.smtp = smtp.rstrip()
-            port = input("What port does the smtp server use? (uses 587 if nothing is provided): ")
+            port = input(
+                "What port does the smtp server use? (uses 587 if nothing is provided): "
+            )
             if not port:
                 port = 587
             try:
@@ -98,7 +106,7 @@ class Email:
     def read_email(self):
         if not os.path.isfile("config/email.txt"):
             return self.setup_email()
-        with open("config/email.txt", 'r') as file:
+        with open("config/email.txt", "r") as file:
             self.email = file.readline().rstrip()
             self.password = file.readline().rstrip()
             self.smtp = file.readline().rstrip()
@@ -106,24 +114,28 @@ class Email:
             if not self.email or not self.password:
                 print("email.txt is not properly formatted")
                 setup = input("Would you like to set it up again? (y/n): ")
-                if setup == 'n':
-                    remove = input("Would you like to remove the pre-existing email configuration? (y/n): ")
-                    if remove == 'y':
+                if setup == "n":
+                    remove = input(
+                        "Would you like to remove the pre-existing email configuration? (y/n): "
+                    )
+                    if remove == "y":
                         os.remove("email.txt")
                     return None, None
                     exit()
-                elif setup == 'y':
+                elif setup == "y":
                     return self.setup_email()
 
     # writes email configurations to a file
     def write_email(self):
         if os.path.isfile("config/email.txt"):
-            overwrite = input("Are you sure that you want to overwrite the current configuration? (y/n): ")
-            if overwrite == 'n':
+            overwrite = input(
+                "Are you sure that you want to overwrite the current configuration? (y/n): "
+            )
+            if overwrite == "n":
                 return
-            elif overwrite == 'y':
+            elif overwrite == "y":
                 os.remove("config/email.txt")
-        with open("config/email.txt", 'w') as file:
+        with open("config/email.txt", "w") as file:
             file.write(f"{self.address}\n{self.password}\n{self.smtp}\n{self.port}")
 
     # sends a message to an email address
@@ -159,8 +171,7 @@ class Email:
             for id in ids:
                 if id not in notified_donations:
                     notified_donations.remove(id)
-            time.sleep(5) # check for a changed status every 30 seconds
-
+            time.sleep(5)  # check for a changed status every 30 seconds
 
     # sends an email to a donater's email address
     def notify_donator(self, email, amount):
@@ -168,7 +179,9 @@ class Email:
         message["From"] = self.email
         message["To"] = email
         message["Subject"] = "Project Headspace and Timing"
-        message.attach(MIMEText(f"Thank you for donating ${amount} to Veterans in need!", "plain"))
+        message.attach(
+            MIMEText(f"Thank you for donating ${amount} to Veterans in need!", "plain")
+        )
         self.send_email(email, message.as_string())
 
     # emails the admin that a transaction completed
@@ -177,15 +190,19 @@ class Email:
         message["From"] = self.email
         message["To"] = self.email
         message["Subject"] = "Donation: Completed"
-        message.attach(MIMEText(f"A donation of ${amount} was completed from {username}", "plain"))
+        message.attach(
+            MIMEText(f"A donation of ${amount} was completed from {username}", "plain")
+        )
         self.send_email(self.email, message.as_string())
+
 
 payments = Venmo()
 email = Email()
-notifications = threading.Thread(target = email.notify)
+notifications = threading.Thread(target=email.notify)
 notifications.start()
 flask = Flask(__name__)
-flask.secret_key = "492050b4de974f459637303458f5ff09" # random string for cookies
+flask.secret_key = "492050b4de974f459637303458f5ff09"  # random string for cookies
+
 
 @flask.route("/donate", methods=("GET", "POST"))
 def donate():
@@ -212,5 +229,6 @@ def donate():
     # otherwise display the donate webpage
     return render_template("donate.html")
 
+
 if __name__ == "__main__":
-	app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0")
