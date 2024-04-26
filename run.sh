@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 . ./bin/activate
-flask --app server.py run
+flask --app main.py run

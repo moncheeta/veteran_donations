@@ -212,4 +212,5 @@ def donate():
     # otherwise display the donate webpage
     return render_template("donate.html")
 
-print("Server started!")
+if __name__ == "__main__":
+	app.run(host="0.0.0.0")
